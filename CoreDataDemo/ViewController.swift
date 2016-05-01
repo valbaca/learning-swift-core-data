@@ -19,10 +19,10 @@ class ViewController: UIViewController {
         let context = appDelegate.managedObjectContext
         
         // "Users" matches the Entity name
-        let newUser = NSEntityDescription.insertNewObjectForEntityForName("Users", inManagedObjectContext: context)
+//        let   newUser = NSEntityDescription.insertNewObjectForEntityForName("Users", inManagedObjectContext: context)
         
-        newUser.setValue("FooBar", forKey: "username") // these match the attributes
-        newUser.setValue("1234", forKey: "password")
+//        newUser.setValue("FooBar", forKey: "username") // these match the attributes
+//        newUser.setValue("1234", forKey: "password")
         
         do {
             try context.save()
@@ -35,6 +35,19 @@ class ViewController: UIViewController {
         do {
             let results = try context.executeFetchRequest(request)
             print(results)
+            
+            if (results.count > 0) {
+                for result : AnyObject in results {
+                    if let user = result.valueForKey("username") as? String {
+                        print(user)
+                        if user == "FooBar" {
+                            context.deleteObject(result as! NSManagedObject)
+                            try context.save()
+                            print("user has been deleted!")
+                        }
+                    }
+                }
+            }
         } catch _ {
             print("error executing request")
         }
